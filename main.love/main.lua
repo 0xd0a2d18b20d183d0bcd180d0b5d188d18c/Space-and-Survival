@@ -15,13 +15,13 @@ function love.load()
 
     sat = {}
     sat.x = 683
-    sat.y = 100
+    sat.y = 200
     sat.radius = 5
     sat.mass = 100
     sat.angle = 0
     sat.vx = 400
     sat.vy = 0
-    sat.acceleration = 200
+    sat.acceleration = 2
     sat.v = 0
     sat.dv = 0
     k = 0
@@ -30,20 +30,28 @@ function love.load()
 end
 
 function love.update(dt)
-    radius = math.sqrt((math.abs(planet.x - sat.x) ^ 2) + (math.abs(planet.y - sat.y) ^ 2))
-
-    k = (planet.y - sat.y) / (planet.x - sat.x)
+    radius = math.abs(planet.x - sat.x) ^ 2 + math.abs(planet.y - sat.y) ^ 2
     
     sat.angle = math.atan2(planet.y - sat.y, planet.x - sat.x)
 
     if radius > planet.radius then
-        f = (G * ((sat.mass * planet.mass) / radius ^ 2))
+        f = (G * ((sat.mass * planet.mass) / radius))
     end
 
     a = f / sat.mass
 
     sat.vx = sat.vx + math.cos(sat.angle) * a * dt
     sat.vy = sat.vy + math.sin(sat.angle) * a * dt
+
+    if love.keyboard.isDown('up') then
+        sat.vx = sat.vx + math.cos(sat.angle - 1.5708) * sat.acceleration
+        sat.vy = sat.vy + math.sin(sat.angle - 1.5708) * sat.acceleration
+    end
+    if love.keyboard.isDown('down') then
+        sat.vx = sat.vx + math.cos(sat.angle + 1.5708) * sat.acceleration
+        sat.vy = sat.vy + math.sin(sat.angle + 1.5708) * sat.acceleration
+    end
+
     sat.x = sat.x + sat.vx * dt
     sat.y = sat.y + sat.vy * dt
 
