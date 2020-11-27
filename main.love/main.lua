@@ -1,17 +1,58 @@
-local gamera = require 'gamera'
+function calcGravityForce(object1, object2, distance)
+    if checkCollisionInvert(object1, object2, distance) then
+        return G * ((object2.mass * object1.mass) / (math.abs(object1.x - object2.x) ^ 2 + math.abs(object1.y - object2.y) ^ 2))
+    else
+        return G * ((object2.mass * object1.mass) / (object2.radius + object1.radius) ^ 2)
+    end
+end
 
-au = 149597870700
+function calcAcceleration(f, m)
+    return f / m
+end
 
-cam = gamera.new(0, 0, au, au)
-cam:setWindow(0,0,1366,768)
+function checkCollisionInvert(object1, object2, distance)
+    if distance < (object1.radius + object2.radius) then
+        return false
+    end
+    return true
+end
+
+function calcDistance(object1, object2)
+    return math.sqrt(math.abs(object1.x - object2.x) ^ 2 + math.abs(object1.y - object2.y) ^ 2)
+end
+
+function calcAngle(object1, object2)
+    return math.atan2(object1.y - object2.y, object1.x - object2.x)
+end
+
+function applyAcceleration(object, angle, a, dt)
+    object.vx = object.vx + math.cos(angle) * a * dt
+    object.vy = object.vy + math.sin(angle) * a * dt
+end
+
+function updatePosition(object, dt)
+    object.x = object.x + object.vx * dt
+    object.y = object.y + object.vy * dt
+end
+
+function control(object, angle)
+    if love.keyboard.isDown('x') then
+        applyAcceleration(object, angle - 1.5708, object.acceleration, 1)
+    end
+    if love.keyboard.isDown('z') then
+        applyAcceleration(object, angle + 1.5708, object.acceleration, 1)
+    end
+    if love.keyboard.isDown('c') then
+        applyAcceleration(object, angle + 3.1416, object.acceleration * 40, 1)
+    end
+end
 
 function love.wheelmoved(x, y)
     if y > 0 then
-        i = i + 0.01
+        scale = scale + 0.01
     elseif y < 0 then
-        i = i - 0.01
+        scale = scale - 0.01
     end
-    cam:setScale(i)
 end
 
 function drawUI()
@@ -19,10 +60,7 @@ function drawUI()
     love.graphics.print('Sat.y: '..sat.y, 0, 15)
     love.graphics.print('Sat.vy: '..sat.vy, 0, 30)
     love.graphics.print('Sat.vx: '..sat.vx, 0, 45)
-    love.graphics.print('Sat.f: '..f, 0, 60)
-    love.graphics.print('Radius: '..radius, 0, 75)
-    love.graphics.print('Sat.angle: '..sat.angle, 0, 90)
-    love.graphics.print('Scale: '..i, 0, 105)
+    love.graphics.print('Scale: '..scale, 0, 60)
 end
 
 function love.load()
@@ -49,52 +87,30 @@ function love.load()
     sat.vx = 400
     sat.vy = 0
     sat.acceleration = 2
-    sat.v = 0
-    sat.dv = 0
-    k = 0
+
     G = 0.00006
-    f = 0
-    i = 1
+    scale = 1
+    au = 149597870700
 end
 
 function love.update(dt)
-    radius = math.abs(planet.x - sat.x) ^ 2 + math.abs(planet.y - sat.y) ^ 2
-    
-    sat.angle = math.atan2(planet.y - sat.y, planet.x - sat.x)
-
-    if radius > planet.radius then
-        f = (G * ((sat.mass * planet.mass) / radius))
+    local distance = calcDistance(planet, sat)
+    local angle = calcAngle(planet, sat)
+    local f = calcGravityForce(planet, sat, distance)
+    local a = calcAcceleration(f, sat.mass)
+    local dt = love.timer.getDelta()
+    applyAcceleration(sat, angle, a, dt)
+    if not checkCollisionInvert(planet, sat, distance) then
+        sat.vx = 0
+        sat.vy = 0
     end
-
-    a = f / sat.mass
-
-    sat.vx = sat.vx + math.cos(sat.angle) * a * dt
-    sat.vy = sat.vy + math.sin(sat.angle) * a * dt
-
-    if love.keyboard.isDown('up') then
-        sat.vx = sat.vx + math.cos(sat.angle - 1.5708) * sat.acceleration
-        sat.vy = sat.vy + math.sin(sat.angle - 1.5708) * sat.acceleration
-    end
-
-    if love.keyboard.isDown('down') then
-        sat.vx = sat.vx + math.cos(sat.angle + 1.5708) * sat.acceleration
-        sat.vy = sat.vy + math.sin(sat.angle + 1.5708) * sat.acceleration
-    end
-
-    sat.x = sat.x + sat.vx * dt
-    sat.y = sat.y + sat.vy * dt
-
-    if love.mouse.isDown( 1 ) then
-        x, y = love.mouse.getPosition()
-        cam:setPosition(x, y)
-    end
+    control(sat, angle)
+    updatePosition(sat, dt)
 end
 
 function love.draw(dt)
-    cam:draw(function(l,t,w,h)
-        love.graphics.circle("fill", planet.x, planet.y, planet.radius)
-        love.graphics.circle("fill", sat.x, sat.y, sat.radius)
-        love.graphics.line(planet.x, planet.y, sat.x, sat.y)
-      end)
+    love.graphics.circle("fill", planet.x, planet.y, planet.radius)
+    love.graphics.circle("fill", sat.x, sat.y, sat.radius)
+    love.graphics.line(planet.x, planet.y, sat.x, sat.y)
     drawUI()
 end
