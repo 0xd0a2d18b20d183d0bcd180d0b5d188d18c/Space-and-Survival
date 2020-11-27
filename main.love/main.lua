@@ -1,6 +1,8 @@
 local gamera = require 'gamera'
 
-cam = gamera.new(0,0,2000,2000)
+au = 149597870700
+
+cam = gamera.new(0, 0, au, au)
 cam:setWindow(0,0,1366,768)
 
 function love.wheelmoved(x, y)
@@ -20,6 +22,7 @@ function drawUI()
     love.graphics.print('Sat.f: '..f, 0, 60)
     love.graphics.print('Radius: '..radius, 0, 75)
     love.graphics.print('Sat.angle: '..sat.angle, 0, 90)
+    love.graphics.print('Scale: '..i, 0, 105)
 end
 
 function love.load()
