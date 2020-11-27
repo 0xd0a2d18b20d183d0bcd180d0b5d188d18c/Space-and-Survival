@@ -1,3 +1,27 @@
+local gamera = require 'gamera'
+
+cam = gamera.new(0,0,2000,2000)
+cam:setWindow(0,0,1366,768)
+
+function love.wheelmoved(x, y)
+    if y > 0 then
+        i = i + 0.01
+    elseif y < 0 then
+        i = i - 0.01
+    end
+    cam:setScale(i)
+end
+
+function drawUI()
+    love.graphics.print('Sat.x: '..sat.x)
+    love.graphics.print('Sat.y: '..sat.y, 0, 15)
+    love.graphics.print('Sat.vy: '..sat.vy, 0, 30)
+    love.graphics.print('Sat.vx: '..sat.vx, 0, 45)
+    love.graphics.print('Sat.f: '..f, 0, 60)
+    love.graphics.print('Radius: '..radius, 0, 75)
+    love.graphics.print('Sat.angle: '..sat.angle, 0, 90)
+end
+
 function love.load()
     love.window.setFullscreen(true)
 
@@ -27,6 +51,7 @@ function love.load()
     k = 0
     G = 0.00006
     f = 0
+    i = 1
 end
 
 function love.update(dt)
@@ -47,6 +72,7 @@ function love.update(dt)
         sat.vx = sat.vx + math.cos(sat.angle - 1.5708) * sat.acceleration
         sat.vy = sat.vy + math.sin(sat.angle - 1.5708) * sat.acceleration
     end
+
     if love.keyboard.isDown('down') then
         sat.vx = sat.vx + math.cos(sat.angle + 1.5708) * sat.acceleration
         sat.vy = sat.vy + math.sin(sat.angle + 1.5708) * sat.acceleration
@@ -55,31 +81,17 @@ function love.update(dt)
     sat.x = sat.x + sat.vx * dt
     sat.y = sat.y + sat.vy * dt
 
-    --[[
-    if sat.x < 0 then
-		sat.x = sat.x + screen.x
-	end
-	if sat.y < 0 then
-		sat.y = sat.y + screen.y
-	end
-	if sat.x > screen.x then
-		sat.x = sat.x - screen.x  
-	end
-	if sat.y > screen.y then
-		sat.y = sat.y - screen.y
+    if love.mouse.isDown( 1 ) then
+        x, y = love.mouse.getPosition()
+        cam:setPosition(x, y)
     end
-    --]]
 end
 
 function love.draw(dt)
-    love.graphics.print(sat.x, 5, 25)
-    love.graphics.print(sat.y, 5, 50)
-    love.graphics.print(sat.vy, 5, 75)
-    love.graphics.print(sat.vx, 5, 100)
-    love.graphics.print(f, 5, 150)
-    love.graphics.print(radius, 5, 175)
-    love.graphics.print(sat.angle, 5, 125)
-    love.graphics.circle("fill", planet.x, planet.y, planet.radius)
-    love.graphics.circle("fill", sat.x, sat.y, sat.radius)
-    love.graphics.line(planet.x, planet.y, sat.x, sat.y);
+    cam:draw(function(l,t,w,h)
+        love.graphics.circle("fill", planet.x, planet.y, planet.radius)
+        love.graphics.circle("fill", sat.x, sat.y, sat.radius)
+        love.graphics.line(planet.x, planet.y, sat.x, sat.y)
+      end)
+    drawUI()
 end
