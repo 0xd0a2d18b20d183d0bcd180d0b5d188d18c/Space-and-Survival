@@ -29,17 +29,18 @@ function love.update(dt)
                     value2.vy = value2.vy / 10
                     --]]
                 end
-                updatePosition(value1, dt)
-                updatePosition(value2, dt)
-                value2.xs, value2.ys = editgrid.toScreen(camera, value2.x, value2.y)
-                value1.xs, value1.ys = editgrid.toScreen(camera, value1.x, value1.y)
             end
         end
+        updatePosition(value1, dt)
+        value1.xs, value1.ys = editgrid.toScreen(camera, value1.x, value1.y)
     end
-    cursor.sx, cursor.sy = love.mouse.getPosition( )
-    cursor.wx, cursor.wx = editgrid.toWorld(camera, cursor.sx, cursor.sy)
+    cursorCoordinates(camera)
     cameraControls()
-    --control(objects.sat, angle)
+    for key, value in pairs(objects) do
+        if value.controlled == 1 then
+            controls(value)
+        end
+    end
 end
 
 function love.draw(dt)

@@ -15,7 +15,11 @@ function cameraControls()
     end
 end
 
-function control(object, angle)
+function controls(object)
+    if love.keyboard.isDown('w') then
+        applyAcceleration(object, calcAngle(cursor, object), object.acceleration, 1)
+    end
+    --[[
     if love.keyboard.isDown('x') then
         applyAcceleration(object, angle - 1.5708, object.acceleration, 1)
     end
@@ -25,15 +29,16 @@ function control(object, angle)
     if love.keyboard.isDown('c') then
         applyAcceleration(object, angle + 3.1416, object.acceleration * 40, 1)
     end
+    --]]
 end
 
 function zoomOut()
     camera.zoom = camera.zoom - 0.05
     if camera.zoom < 0.2 then
-        camera.zoom = math.abs(camera.zoom - 0.01)
+        camera.zoom = math.abs(camera.zoom - 0.001)
     end
     if camera.zoom < 0.02 then
-        camera.zoom = math.abs(camera.zoom - 0.001)
+        camera.zoom = math.abs(camera.zoom - 0.0001)
     end
 end
 
