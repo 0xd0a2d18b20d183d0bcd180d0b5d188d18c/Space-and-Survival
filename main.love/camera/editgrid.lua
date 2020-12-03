@@ -125,7 +125,7 @@ local function toScreen(camera, worldx, worldy)
     local sin, cos = math.sin(angle), math.cos(angle)
     local x, y = worldx - camx, worldy - camy
     x, y = cos * x + sin * y, -sin * x + cos * y
-    return zoom * x + sw/2 + sx, zoom * y + sh/2 + sy
+    return zoom * x + sx, zoom * y + sy
 end
 
 local function minorInterval(camera, visuals)
