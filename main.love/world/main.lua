@@ -7,9 +7,10 @@ function initWorld()
         wx = 0,
         wy = 0 
     }
+    -- map size: 50 au (meters)
     local map = {
-        x = 14959787070000,
-        y = 14959787070000
+        x = 149597870700 * 50,
+        y = 149597870700 * 50
     }
     local camera = {
         x = 341,

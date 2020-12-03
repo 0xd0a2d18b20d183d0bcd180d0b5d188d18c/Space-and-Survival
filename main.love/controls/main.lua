@@ -1,15 +1,6 @@
 local controls = {}
 
-function control(object, angle)
-    if love.keyboard.isDown('x') then
-        applyAcceleration(object, angle - 1.5708, object.acceleration, 1)
-    end
-    if love.keyboard.isDown('z') then
-        applyAcceleration(object, angle + 1.5708, object.acceleration, 1)
-    end
-    if love.keyboard.isDown('c') then
-        applyAcceleration(object, angle + 3.1416, object.acceleration * 40, 1)
-    end
+function cameraControls()
     if love.keyboard.isDown('up') then
         camera.y = camera.y - (10 / camera.zoom)
     end
@@ -21,6 +12,18 @@ function control(object, angle)
     end
     if love.keyboard.isDown('right') then
         camera.x = camera.x + (10 / camera.zoom)
+    end
+end
+
+function control(object, angle)
+    if love.keyboard.isDown('x') then
+        applyAcceleration(object, angle - 1.5708, object.acceleration, 1)
+    end
+    if love.keyboard.isDown('z') then
+        applyAcceleration(object, angle + 1.5708, object.acceleration, 1)
+    end
+    if love.keyboard.isDown('c') then
+        applyAcceleration(object, angle + 3.1416, object.acceleration * 40, 1)
     end
 end
 

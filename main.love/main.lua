@@ -38,7 +38,8 @@ function love.update(dt)
     end
     cursor.sx, cursor.sy = love.mouse.getPosition( )
     cursor.wx, cursor.wx = editgrid.toWorld(camera, cursor.sx, cursor.sy)
-    control(objects.sat, angle)
+    cameraControls()
+    --control(objects.sat, angle)
 end
 
 function love.draw(dt)
