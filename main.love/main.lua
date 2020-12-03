@@ -85,19 +85,20 @@ function love.wheelmoved(x, y)
 end
 
 function drawUI(vx, vy, vw, vh)
-    love.graphics.print('Sat.x: '..sat.x)
-    love.graphics.print('Sat.y: '..sat.y, 0, 15)
-    love.graphics.print('Sat.vy: '..sat.vy, 0, 30)
-    love.graphics.print('Sat.vx: '..sat.vx, 0, 45)
-    love.graphics.print('Scale: '..camera.zoom, 0, 60)
-    love.graphics.print('Mx: '..mx, 0, 75)
-    love.graphics.print('My: '..my, 0, 90)
-    love.graphics.print('Mxw: '..mxw, 0, 105)
-    love.graphics.print('Myw: '..myw, 0, 120)
-    love.graphics.print('Planet.x: '..planet.x, 0, 135)
-    love.graphics.print('Planet.y: '..planet.y, 0, 150)
-    love.graphics.print('Planet.xscreen: '..planet.xs, 0, 165)
-    love.graphics.print('Planet.yscreen: '..planet.ys, 0, 180)
+    local i = 0
+    love.graphics.print("Sat:", 0, i)
+    i = i + 15
+    for key, value in pairs(sat) do
+        love.graphics.print(key..": "..value, 0, i)
+        i = i + 15
+    end
+    i = i + 15
+    love.graphics.print("Planet:", 0, i)
+    i = i + 15
+    for key, value in pairs(planet) do
+        love.graphics.print(key..": "..value, 0, i)
+        i = i + 15
+    end
 end
 
 function love.load()
