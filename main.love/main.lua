@@ -67,7 +67,7 @@ function love.keypressed(key, scancode, isrepeat)
     end
     if key == "kp-" then
         camera.zoom = camera.zoom - 0.05
-    end 
+    end
  end
 
 function love.wheelmoved(x, y)
@@ -182,42 +182,14 @@ function love.load()
             ys = 0
         },
         sat2 = {
-            x = 300,
-            y = 0,
-            radius = 5,
-            mass = 10,
-            angle = 0,
-            fgravity = 0,
-            agravity = 0,
-            vx = 0,
-            vy = 200,
-            acceleration = 2,
-            xs = 0,
-            ys = 0
-        },
-        sat3 = {
-            x = -300,
-            y = 0,
-            radius = 5,
-            mass = 10,
-            angle = 0,
-            fgravity = 0,
-            agravity = 0,
-            vx = 0,
-            vy = -200,
-            acceleration = 2,
-            xs = 0,
-            ys = 0
-        },
-        sat4 = {
             x = 0,
-            y = 300,
+            y = -350,
             radius = 5,
             mass = 10,
             angle = 0,
             fgravity = 0,
             agravity = 0,
-            vx = -200,
+            vx = 180,
             vy = 0,
             acceleration = 2,
             xs = 0,
@@ -243,10 +215,11 @@ function love.update(dt)
                 applyAcceleration(value1, angle1, acc1, dt)
                 applyAcceleration(value2, angle2, acc2, dt)
                 if checkCollision(value1, value2, distance) then
-                    value1.vx = value1.vx / 10
+                    --[[value1.vx = value1.vx / 10
                     value1.vy = value1.vy / 10
                     value2.vx = value2.vx / 10
                     value2.vy = value2.vy / 10
+                    --]]
                 end
                 updatePosition(value1, dt)
                 updatePosition(value2, dt)
