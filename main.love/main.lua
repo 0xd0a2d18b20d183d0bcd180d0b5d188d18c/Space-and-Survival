@@ -1,10 +1,10 @@
 local editgrid = require "editgrid"
 
 function calcGravityForce(object1, object2, distance)
-    if checkCollisionInvert(object1, object2, distance) then
-        return G * ((object2.mass * object1.mass) / (math.abs(object1.x - object2.x) ^ 2 + math.abs(object1.y - object2.y) ^ 2))
-    else
+    if checkCollision(object1, object2, distance) then
         return G * ((object2.mass * object1.mass) / (object2.radius + object1.radius) ^ 2)
+    else
+        return G * ((object2.mass * object1.mass) / (math.abs(object1.x - object2.x) ^ 2 + math.abs(object1.y - object2.y) ^ 2))
     end
 end
 
@@ -12,11 +12,11 @@ function calcAcceleration(f, m)
     return f / m
 end
 
-function checkCollisionInvert(object1, object2, distance)
+function checkCollision(object1, object2, distance)
     if distance < (object1.radius + object2.radius) then
-        return false
+        return true
     end
-    return true
+    return false
 end
 
 function calcDistance(object1, object2)
@@ -67,7 +67,7 @@ function love.keypressed(key, scancode, isrepeat)
     end
     if key == "kp-" then
         camera.zoom = camera.zoom - 0.05
-    end 
+    end
  end
 
 function love.wheelmoved(x, y)
@@ -85,25 +85,47 @@ function love.wheelmoved(x, y)
 end
 
 function drawUI(vx, vy, vw, vh)
-    love.graphics.print('Sat.x: '..sat.x)
-    love.graphics.print('Sat.y: '..sat.y, 0, 15)
-    love.graphics.print('Sat.vy: '..sat.vy, 0, 30)
-    love.graphics.print('Sat.vx: '..sat.vx, 0, 45)
-    love.graphics.print('Scale: '..camera.zoom, 0, 60)
-    love.graphics.print('Mx: '..mx, 0, 75)
-    love.graphics.print('My: '..my, 0, 90)
-    love.graphics.print('Mxw: '..mxw, 0, 105)
-    love.graphics.print('Myw: '..myw, 0, 120)
-    love.graphics.print('Planet.x: '..planet.x, 0, 135)
-    love.graphics.print('Planet.y: '..planet.y, 0, 150)
-    love.graphics.print('Planet.xscreen: '..planet.xs, 0, 165)
-    love.graphics.print('Planet.yscreen: '..planet.ys, 0, 180)
+    --[[local i = 0
+    love.graphics.print("Sun:", 0, i)
+    i = i + 15
+    for key, value in pairs(objects.sun) do
+        love.graphics.print(key..": "..value, 0, i)
+        i = i + 15
+    end
+    i = i + 15
+    love.graphics.print("Mercury:", 0, i)
+    i = i + 15
+    for key, value in pairs(objects.mercury) do
+        love.graphics.print(key..": "..value, 0, i)
+        i = i + 15
+    end
+    i = i + 15
+    love.graphics.print("Venus:", 0, i)
+    i = i + 15
+    for key, value in pairs(objects.venus) do
+        love.graphics.print(key..": "..value, 0, i)
+        i = i + 15
+    end
+    i = i + 15
+    love.graphics.print("Earth:", 0, i)
+    i = i + 15
+    for key, value in pairs(objects.venus) do
+        love.graphics.print(key..": "..value, 0, i)
+        i = i + 15
+    end
+    i = i + 15
+    love.graphics.print("Mars:", 0, i)
+    i = i + 15
+    for key, value in pairs(objects.venus) do
+        love.graphics.print(key..": "..value, 0, i)
+        i = i + 15
+    end--]]
 end
 
 function love.load()
     map = {
-        x = 149597870700,
-        y = 149597870700
+        x = 14959787070000,
+        y = 14959787070000
     }
     
     camera = {
@@ -130,51 +152,83 @@ function love.load()
         interval = 100
     }
 
-    planet = {
-        x = 0,
-        y = 0,
-        radius = 75,
-        mass = 6 * 10 ^ 11,
-        v = 0,
-        xs = 0,
-        ys = 0
-    }
-
-    sat = {
-        x = 0,
-        y = -183,
-        radius = 5,
-        mass = 100,
-        angle = 0,
-        vx = 400,
-        vy = 0,
-        acceleration = 2,
-        xs = 0,
-        ys = 0
+    objects = {
+        planet = {
+            x = 0,
+            y = 0,
+            radius = 75,
+            mass = 6 * 10 ^ 11,
+            angle = 0,
+            fgravity = 0,
+            agravity = 0,
+            vx = 0,
+            vy = 0,
+            acceleration = 0,
+            xs = 0,
+            ys = 0
+        },    
+        sat1 = {
+            x = 0,
+            y = -300,
+            radius = 5,
+            mass = 10,
+            angle = 0,
+            fgravity = 0,
+            agravity = 0,
+            vx = 200,
+            vy = 0,
+            acceleration = 2,
+            xs = 0,
+            ys = 0
+        },
+        sat2 = {
+            x = 0,
+            y = -350,
+            radius = 5,
+            mass = 10,
+            angle = 0,
+            fgravity = 0,
+            agravity = 0,
+            vx = 180,
+            vy = 0,
+            acceleration = 2,
+            xs = 0,
+            ys = 0
+        }
     }
 
     G = 0.00006
-    scale = 1
-    au = 149597870700
 end
 
 function love.update(dt)
-    local distance = calcDistance(planet, sat)
-    local angle = calcAngle(planet, sat)
-    local f = calcGravityForce(planet, sat, distance)
-    local a = calcAcceleration(f, sat.mass)
-    local dt = love.timer.getDelta()
-    applyAcceleration(sat, angle, a, dt)
-    if not checkCollisionInvert(planet, sat, distance) then
-        sat.vx = 0
-        sat.vy = 0
-    end
-    control(sat, angle)
-    updatePosition(sat, dt)
     mx, my = love.mouse.getPosition( )
     mxw, myw = editgrid.toWorld(camera, mx, my)
-    sat.xs, sat.ys = editgrid.toScreen(camera, sat.x, sat.y)
-    planet.xs, planet.ys = editgrid.toScreen(camera, planet.x, planet.y)
+    for key1, value1 in pairs(objects) do
+        for key2, value2 in pairs(objects) do
+            if value1 ~= value2 then
+                local distance = calcDistance(value1, value2)
+                local angle1 = calcAngle(value2, value1)
+                local angle2 = calcAngle(value1, value2)
+                local f = calcGravityForce(value1, value2, distance)
+                local acc1 = calcAcceleration(f, value1.mass)
+                local acc2 = calcAcceleration(f, value2.mass)
+                applyAcceleration(value1, angle1, acc1, dt)
+                applyAcceleration(value2, angle2, acc2, dt)
+                if checkCollision(value1, value2, distance) then
+                    --[[value1.vx = value1.vx / 10
+                    value1.vy = value1.vy / 10
+                    value2.vx = value2.vx / 10
+                    value2.vy = value2.vy / 10
+                    --]]
+                end
+                updatePosition(value1, dt)
+                updatePosition(value2, dt)
+                value2.xs, value2.ys = editgrid.toScreen(camera, value2.x, value2.y)
+                value1.xs, value1.ys = editgrid.toScreen(camera, value1.x, value1.y)
+            end
+        end
+    end
+    control(objects.sat, angle)
 end
 
 function love.draw(dt)
@@ -182,8 +236,8 @@ function love.draw(dt)
     grid:draw()
     drawUI()
     grid:push()
-    love.graphics.circle("fill", planet.xs, planet.ys, planet.radius * camera.zoom)
-    love.graphics.circle("fill", sat.xs, sat.ys, sat.radius * camera.zoom)
-    love.graphics.line(planet.xs, planet.ys, sat.xs, sat.ys)
+    for key, value in pairs(objects) do
+        love.graphics.circle("fill", value.xs, value.ys, value.radius * camera.zoom)
+    end
     love.graphics.pop()
 end
