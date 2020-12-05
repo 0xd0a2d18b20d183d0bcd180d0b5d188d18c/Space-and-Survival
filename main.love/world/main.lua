@@ -1,3 +1,5 @@
+local json = require "../json/main"
+
 local world = {}
 
 function initWorld()
@@ -22,86 +24,93 @@ function initWorld()
         sw = love.graphics.getWidth(),
         sh = love.graphics.getHeight()
     }
-    local visuals = {
-        size = 256,
-        subdivisions = 4,
-        color = {0, 0, 0},
-        drawScale = false,
-        xColor = {255, 255, 0},
-        yColor = {0, 255, 255},
-        fadeFactor = 0.3,
-        textFadeFactor = 0.5,
-        hideOrigin = true,
-        interval = 100
-    }
     local objects = {
-        sun = {
-            x = 1000000,
-            y = 0,
-            radius = 100000,
-            mass = 6 * 10 ^ 18,
-            angle = 0,
-            vx = 0,
-            vy = 0,
-            acceleration = 0,
-            controlled = false,
-            xs = 0,
-            ys = 0
-        },
-        planet1 = {
-            x = -150,
+        planet = {
+            x = 0,
             y = 0,
             radius = 75,
             mass = 6 * 10 ^ 11,
             angle = 0,
+            fgravity = 0,
+            agravity = 0,
             vx = 0,
-            vy = -20375,
+            vy = 150,
             acceleration = 0,
-            controlled = false,
-            xs = 0,
-            ys = 0
-        },
-        planet2 = {
-            x = 150,
-            y = 0,
-            radius = 75,
-            mass = 6 * 10 ^ 11,
-            angle = 0,
-            vx = 0,
-            vy = -20000,
-            acceleration = 0,
-            controlled = false,
             xs = 0,
             ys = 0
         },    
-        sat1 = {
+        sat = {
             x = 0,
-            y = -1000,
+            y = -200,
             radius = 5,
             mass = 10,
             angle = 0,
-            vx = 400,
+            fgravity = 0,
+            agravity = 0,
+            vx = 250,
             vy = 0,
             acceleration = 2,
-            controlled = true,
             xs = 0,
             ys = 0
         },
         sat2 = {
             x = 0,
-            y = -1200,
+            y = 340,
             radius = 5,
             mass = 10,
             angle = 0,
-            vx = 400,
+            fgravity = 0,
+            agravity = 0,
+            vx = 0,
+            vy = 400,
+            acceleration = 2,
+            xs = 0,
+            ys = 0
+        },
+        sat3 = {
+            x = 0,
+            y = 310,
+            radius = 5,
+            mass = 10,
+            angle = 0,
+            fgravity = 0,
+            agravity = 0,
+            vx = 0,
+            vy = -300,
+            acceleration = 2,
+            xs = 0,
+            ys = 0
+        },
+        sat4 = {
+            x = 0,
+            y = 300,
+            radius = 5,
+            mass = 10,
+            angle = 0,
+            fgravity = 0,
+            agravity = 0,
+            vx = -350,
             vy = 0,
             acceleration = 2,
-            controlled = 1,
+            xs = 0,
+            ys = 0
+        },
+        planet2 = {
+            x = 1000,
+            y = 1000,
+            radius = 75,
+            mass = 6 * 10 ^ 11,
+            angle = 0,
+            fgravity = 0,
+            agravity = 0,
+            vx = 0,
+            vy = -150       ,
+            acceleration = 2,
             xs = 0,
             ys = 0
         }
     }
-    return map, camera, visuals, objects, cursor
+    return map, camera, objects, cursor
 end
 
 return world
