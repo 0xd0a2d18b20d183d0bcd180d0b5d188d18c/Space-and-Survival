@@ -2,16 +2,16 @@ local controls = {}
 
 function cameraControls()
     if love.keyboard.isDown('up') then
-        camera.y = camera.y - (10 / camera.zoom)
+        settings.y = settings.y - (10 / settings.zoom)
     end
     if love.keyboard.isDown('down') then
-        camera.y = camera.y + (10 / camera.zoom)
+        settings.y = settings.y + (10 / settings.zoom)
     end
     if love.keyboard.isDown('left') then
-        camera.x = camera.x - (10 / camera.zoom)
+        settings.x = settings.x - (10 / settings.zoom)
     end
     if love.keyboard.isDown('right') then
-        camera.x = camera.x + (10 / camera.zoom)
+        settings.x = settings.x + (10 / settings.zoom)
     end
 end
 
@@ -33,28 +33,35 @@ function controls(object)
 end
 
 function zoomOut()
-    camera.zoom = camera.zoom - 0.05
-    if camera.zoom < 0.2 then
-        camera.zoom = math.abs(camera.zoom - 0.001)
+    settings.zoom = settings.zoom - 0.05
+    if settings.zoom < 0.2 then
+        settings.zoom = math.abs(settings.zoom - 0.001)
     end
-    if camera.zoom < 0.02 then
-        camera.zoom = math.abs(camera.zoom - 0.0001)
+    if settings.zoom < 0.02 then
+        settings.zoom = math.abs(settings.zoom - 0.0001)
     end
 end
 
 function zoomIn()
-    if camera.zoom < 0.02 then
-        camera.zoom = math.abs(camera.zoom + 0.001)
+    if settings.zoom < 0.02 then
+        settings.zoom = math.abs(settings.zoom + 0.001)
     end
-    if camera.zoom < 0.2 then
-        camera.zoom = math.abs(camera.zoom + 0.01)
+    if settings.zoom < 0.2 then
+        settings.zoom = math.abs(settings.zoom + 0.01)
     end
-    if camera.zoom > 0.2 then
-        camera.zoom = math.abs(camera.zoom + 0.05)
+    if settings.zoom > 0.2 then
+        settings.zoom = math.abs(settings.zoom + 0.05)
     end
 end
 
 function love.keypressed(key, scancode, isrepeat)
+    if key == "space" then
+        if stop == 0 then
+            stop = 1
+        elseif stop == 1 then
+            stop = 0
+        end
+    end
     if key == "escape" then
        love.event.quit()
     end
