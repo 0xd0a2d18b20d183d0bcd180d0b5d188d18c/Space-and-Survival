@@ -1,0 +1,62 @@
+{
+    "mars": {
+        "mass": 60,
+        "x": 8000,
+        "xs": 0,
+        "y": 0,
+        "ys": 0,
+        "acceleration": 0,
+        "angle": 0,
+        "vx": 0,
+        "radius": 100,
+        "vy": -40
+    },
+    "sun": {
+        "mass": 6000000000000,
+        "x": 0,
+        "xs": 0,
+        "y": 0,
+        "ys": 0,
+        "acceleration": 0,
+        "angle": 0,
+        "vx": 0,
+        "radius": 200,
+        "vy": 0
+    },
+    "venus": {
+        "mass": 60,
+        "x": 4000,
+        "xs": 0,
+        "y": 0,
+        "ys": 0,
+        "acceleration": 0,
+        "angle": 0,
+        "vx": 0,
+        "radius": 100,
+        "vy": -80
+    },
+    "mercury": {
+        "mass": 60,
+        "x": 2000,
+        "xs": 0,
+        "y": 0,
+        "ys": 0,
+        "acceleration": 0,
+        "angle": 0,
+        "vx": 0,
+        "radius": 100,
+        "vy": -200
+    },
+    "earth": {
+        "mass": 60,
+        "x": 6000,
+        "xs": 0,
+        "y": 0,
+        "ys": 0,
+        "acceleration": 0,
+        "angle": 0,
+        "vx": 0,
+        "radius": 100,
+        "vy": -60
+    }
+}
