@@ -16,7 +16,7 @@ function debugInformation(stop)
     i = i + dist
     love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
     i = i + dist
-    for key, value in pairs(objects.sat2) do
+    --[[for key, value in pairs(objects.rocket) do
         love.graphics.print(key..": "..value, 0, i)
         i = i + dist
     end

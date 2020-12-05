@@ -45,6 +45,11 @@ function love.update(dt)
     end
     cursorCoordinates(settings)
     cameraControls()
+    updateRocket()
+end
+
+function updateRocket()
+    objects.rocket.vertexes = {objects.rocket.x - 5, objects.rocket.y - 5, objects.rocket.x, objects.rocket.y + 5, objects.rocket.x + 5, objects.rocket.y - 5}
 end
 
 function love.draw(dt)
@@ -54,5 +59,6 @@ function love.draw(dt)
     for key, value in pairs(objects) do
         love.graphics.circle("line", value.xs, value.ys, value.radius * settings.zoom)
     end
+    love.graphics.polygon("line", objects.rocket.vertexes)
     love.graphics.pop()
 end
