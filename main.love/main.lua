@@ -24,14 +24,6 @@ function love.update(dt)
                     local acc2 = calcAcceleration(f, value2.mass)
                     applyAcceleration(value1, angle1, acc1, dt)
                     applyAcceleration(value2, angle2, acc2, dt)
-                    if checkCollision(value1, value2, distance) then
-                        --[[
-                        value1.vx = value1.vx / 10
-                        value1.vy = value1.vy / 10
-                        value2.vx = value2.vx / 10
-                        value2.vy = value2.vy / 10
-                        --]]
-                    end
                 end
             end
             updatePosition(value1, dt)
@@ -39,26 +31,20 @@ function love.update(dt)
         end
         for key, value in pairs(objects) do
             if value.controlled == 1 then
-                controls(value)
+                controls(value, dt)
             end
         end
     end
     cursorCoordinates(settings)
     cameraControls()
-    updateRocket()
-end
-
-function updateRocket()
-    objects.rocket.vertexes = {objects.rocket.x - 5, objects.rocket.y - 5, objects.rocket.x, objects.rocket.y + 5, objects.rocket.x + 5, objects.rocket.y - 5}
 end
 
 function love.draw(dt)
     local camera = camera.init(settings)
-    debugInformation(stop)
+    debugInformation()
     camera:push()
     for key, value in pairs(objects) do
-        love.graphics.circle("line", value.xs, value.ys, value.radius * settings.zoom)
+        love.graphics.draw(value.image, value.xs, value.ys, value.angle + (math.pi / 2), 1, 1, value.image:getWidth() / 2, value.image:getHeight() / 2)
     end
-    love.graphics.polygon("line", objects.rocket.vertexes)
     love.graphics.pop()
 end
