@@ -26,6 +26,7 @@ function love.update(dt)
                     applyAcceleration(value2, angle2, acc2, dt)
                 end
             end
+            applyAngularVelocity(value1, dt)
             updatePosition(value1, dt)
             value1.xs, value1.ys = camera.toScreen(settings, value1.x, value1.y)
         end
@@ -42,7 +43,6 @@ end
 
 function love.draw(dt)
     local camera = camera.init(settings)
-    --debugInformation(cursor)
     local i = 0
     local dist = 15
     love.graphics.print("Cursor.sx:"..cursor.sx, 0, i)

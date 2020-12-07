@@ -23,10 +23,10 @@ function controls(object, dt)
         applyAcceleration(object, object.angle, -object.acceleration, dt)
     end
     if love.keyboard.isDown('a') then
-        object.angle = object.angle - object.rotation * dt
+        object.va = object.va - 0.05
     end
     if love.keyboard.isDown('d') then
-        object.angle = object.angle + object.rotation * dt
+        object.va = object.va + 0.05
     end
 end
 
