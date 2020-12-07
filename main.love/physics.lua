@@ -25,4 +25,8 @@ function applyAcceleration(object, angle, a, dt)
     object.vy = object.vy + math.sin(angle) * a * dt
 end
 
+function applyAngularVelocity(object, dt)
+    object.angle = object.angle + object.va * dt
+end
+
 return physics
