@@ -1,4 +1,4 @@
-local json = require "../json/main"
+local json = require "json"
 
 local world = {}
 
@@ -14,7 +14,7 @@ function initWorld()
         x = 149597870700 * 50,
         y = 149597870700 * 50
     }
-    local camera = {
+    local settings = {
         x = 0,
         y = 0,
         zoom = 1,
@@ -43,7 +43,7 @@ function initWorld()
         moon = {
             x = 0,
             y = 0,
-            radius = 75,
+            radius = 210,
             mass = 6 * 10 ^ 11,
             angle = 0,
             controlled = 0,
@@ -57,7 +57,7 @@ function initWorld()
         },
 
     }
-    return map, camera, objects, cursor
+    return map, settings, objects, cursor
 end
 
 return world
