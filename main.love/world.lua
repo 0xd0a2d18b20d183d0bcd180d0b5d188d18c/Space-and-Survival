@@ -25,18 +25,19 @@ function initWorld()
         sh = love.graphics.getHeight()
     }
     local objects = {
-        rocket = {
+        sat = {
             x = 0,
             y = -400,
             radius = 5,
             mass = 10,
             angle = 0,
             controlled = 1,
-            vx = 500,
+            vx = 400,
             vy = 0,
-            acceleration = 10,
+            va = 0,
+            acceleration = 100,
             rotation = math.pi,
-            image = love.graphics.newImage("assets/rocket.png"),
+            image = love.graphics.newImage("assets/sat.png"),
             xs = 0,
             ys = 0
         },

@@ -54,7 +54,8 @@ function love.draw(dt)
     love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
     camera:push()
     for key, value in pairs(objects) do
-        love.graphics.draw(value.image, value.xs, value.ys, value.angle + (math.pi / 2), settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)
+        love.graphics.draw(value.image, value.xs, value.ys, value.angle, settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)
+        love.graphics.line(value.xs, value.ys, value.xs + value.vx, value.ys + value.vy)
     end
     love.graphics.pop()
 end
