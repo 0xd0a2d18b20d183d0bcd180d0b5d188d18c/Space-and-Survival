@@ -9,8 +9,6 @@ local json = require "json"
 function love.load()
     map, settings, objects, cursor = initWorld()
     stop = 0
-    tempx = 0
-    tempy = 0
 end
 
 function love.update(dt)
@@ -26,6 +24,9 @@ function love.update(dt)
                     local acc2 = calcAcceleration(f, value2.mass)
                     applyAcceleration(value1, angle1, acc1, dt)
                     applyAcceleration(value2, angle2, acc2, dt)
+                    if checkCollision(value1, value2, distance) then
+                        objects[key2] = nil
+                    end
                 end
             end
             applyAngularVelocity(value1, dt)
@@ -49,7 +50,7 @@ function love.mousepressed(x, y, button, istouch)
         table.insert(objects, {
             x = tempx,
             y = tempy,
-            radius = 5,
+            radius = 60,
             mass = 10,
             angle = 0,
             controlled = 1,
@@ -88,11 +89,7 @@ function love.draw(dt)
     love.graphics.print("Cursor.wx:"..cursor.x, 0, i)
     i = i + dist
     love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
-    i = i + dist
-    love.graphics.print("Temp.x:"..tempx, 0, i)
-    i = i + dist
-    love.graphics.print("Temp.y:"..tempy, 0, i)
-    i = i + dist
+    --[[
     for key, value in pairs(objects) do
         love.graphics.print(key, 0, i)
         i = i + dist
@@ -103,6 +100,7 @@ function love.draw(dt)
             end
         end
     end
+    --]]
         camera:push()
     for key, value in pairs(objects) do
         love.graphics.draw(value.image, value.xs, value.ys, value.angle, settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)

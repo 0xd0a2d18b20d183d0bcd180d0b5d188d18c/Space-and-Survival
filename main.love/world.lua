@@ -28,7 +28,7 @@ function initWorld()
         sat = {
             x = 0,
             y = -400,
-            radius = 5,
+            radius = 60,
             mass = 10,
             angle = 0,
             controlled = 1,
