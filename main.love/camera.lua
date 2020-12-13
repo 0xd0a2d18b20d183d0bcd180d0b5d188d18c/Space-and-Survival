@@ -81,6 +81,10 @@ local function drawUI(camera, objects)
     i = i + dist
     love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
     i = i + dist
+    love.graphics.print("Cursor.tempx:"..cursor.tempx, 0, i)
+    i = i + dist
+    love.graphics.print("Cursor.tempy:"..cursor.tempy, 0, i)
+    i = i + dist
     for key, value in pairs(objects) do
         love.graphics.print(key, 0, i)
         i = i + dist
@@ -105,12 +109,19 @@ local function drawUI(camera, objects)
     end
 end
 
+local function drawObjects(camera, objects)
+    for key, value in pairs(objects) do
+        love.graphics.draw(value.image, value.xs, value.ys, value.angle, settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)
+    end
+end
+
 local cameraIndex = {
     toWorld = function (self, x, y) return toWorld(self.camera, x, y) end,
     toScreen = function (self, x, y) return toScreen(self.camera, x, y) end,
     visible = function (self) return visible(self.camera) end,
     push = function (self) return push(self.camera) end,
-    drawUI = function (self, objects) return drawUI(self.camera, objects) end
+    drawUI = function (self, objects) return drawUI(self.camera, objects) end,
+    drawObjects = function (self, objects) return drawObjects(self.camera, objects) end
 }
 
 local cameraMt = {
@@ -130,5 +141,6 @@ return {
     visible = visible,
     init = init,
     push = push,
-    drawUI = drawUI
+    drawUI = drawUI,
+    drawObjects = drawObjects
 }
