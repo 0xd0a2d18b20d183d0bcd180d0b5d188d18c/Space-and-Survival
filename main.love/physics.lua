@@ -2,11 +2,7 @@ local physics = {}
 
 function calcGravityForce(object1, object2, distance)
     local G = 0.00006
-    if checkCollision(object1, object2, distance) then
-        return G * ((object2.mass * object1.mass) / (object2.radius + object1.radius) ^ 2)
-    else
-        return G * ((object2.mass * object1.mass) / (math.abs(object1.x - object2.x) ^ 2 + math.abs(object1.y - object2.y) ^ 2))
-    end
+    return G * ((object2.mass * object1.mass) / (math.abs(object1.x - object2.x) ^ 2 + math.abs(object1.y - object2.y) ^ 2))
 end
 
 function calcAcceleration(f, m)
