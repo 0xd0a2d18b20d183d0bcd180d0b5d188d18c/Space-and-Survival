@@ -57,7 +57,7 @@ local function toScreen(camera, worldx, worldy)
     local sin, cos = math.sin(angle), math.cos(angle)
     local x, y = worldx - camx, worldy - camy
     x, y = cos * x + sin * y, -sin * x + cos * y
-    return zoom * x + sx, zoom * y + sy
+    return zoom * x + sw/2 + sx, zoom * y + sh/2 + sy
 end
 
 local function push(camera)
@@ -70,11 +70,47 @@ local function push(camera)
     lg.translate(-camx, -camy)
 end
 
+local function drawUI(camera, objects)
+    local i = 0
+    local dist = 15
+    love.graphics.print("Cursor.sx:"..cursor.sx, 0, i)
+    i = i + dist
+    love.graphics.print("Cursor.sy:"..cursor.sy, 0, i)
+    i = i + dist
+    love.graphics.print("Cursor.wx:"..cursor.x, 0, i)
+    i = i + dist
+    love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
+    i = i + dist
+    for key, value in pairs(objects) do
+        love.graphics.print(key, 0, i)
+        i = i + dist
+            for key, value2 in pairs(value) do
+            if key == "x" then
+                love.graphics.print(key..": "..value2, 0, i)
+                i = i + dist
+            end
+            if key == "y" then
+                love.graphics.print(key..": "..value2, 0, i)
+                i = i + dist
+            end
+            if key == "xs" then
+                love.graphics.print(key..": "..value2, 0, i)
+                i = i + dist
+            end
+            if key == "ys" then
+                love.graphics.print(key..": "..value2, 0, i)
+                i = i + dist
+            end
+        end
+    end
+end
+
 local cameraIndex = {
     toWorld = function (self, x, y) return toWorld(self.camera, x, y) end,
     toScreen = function (self, x, y) return toScreen(self.camera, x, y) end,
     visible = function (self) return visible(self.camera) end,
-    push = function (self) return push(self.camera) end
+    push = function (self) return push(self.camera) end,
+    drawUI = function (self, objects) return drawUI(self.camera, objects) end
 }
 
 local cameraMt = {
@@ -93,5 +129,6 @@ return {
     toScreen = toScreen,
     visible = visible,
     init = init,
-    push = push
+    push = push,
+    drawUI = drawUI
 }
