@@ -2,30 +2,30 @@ local camera = require "camera"
 
 local controls = {}
 
-local tempx0 = 0
-local tempy0 = 0
-
 function cameraControls()
-    if love.keyboard.isDown('up') then
+    if love.keyboard.isDown('w') then
         settings.y = settings.y - (10 / settings.zoom)
     end
-    if love.keyboard.isDown('down') then
+    if love.keyboard.isDown('s') then
         settings.y = settings.y + (10 / settings.zoom)
     end
-    if love.keyboard.isDown('left') then
+    if love.keyboard.isDown('a') then
         settings.x = settings.x - (10 / settings.zoom)
     end
-    if love.keyboard.isDown('right') then
+    if love.keyboard.isDown('d') then
         settings.x = settings.x + (10 / settings.zoom)
     end
+    --[[
     if love.keyboard.isDown('q') then
         settings.angle = settings.angle + 0.01
     end
     if love.keyboard.isDown('e') then
         settings.angle = settings.angle - 0.01
     end
+    ]]
 end
 
+--[[
 function controls(object, dt)
     if love.keyboard.isDown('w') then
         applyAcceleration(object, object.angle, object.acceleration, dt)
@@ -40,6 +40,7 @@ function controls(object, dt)
         object.va = object.va + 0.05
     end
 end
+]]
 
 local function zoomOut()
     settings.zoom = settings.zoom - 0.05
@@ -74,12 +75,6 @@ function love.keypressed(key, scancode, isrepeat)
     if key == "escape" then
        love.event.quit()
     end
-    if key == "kp+" then
-        zoomIn()
-    end
-    if key == "kp-" then
-        zoomOut()
-    end
  end
 
 function love.wheelmoved(x, y)
@@ -91,12 +86,7 @@ function love.wheelmoved(x, y)
 end
 
 function love.mousepressed(x, y, button, istouch)
-    if button == 1 then
-        tempx0, tempy0 = camera.toWorld(settings, x, y)
-    end
-    if button == 2 then
-        tempx0, tempy0 = camera.toWorld(settings, x, y)
-    end
+    tempx0, tempy0 = camera.toWorld(settings, x, y)
 end
 
 function love.mousereleased(x, y, button)
@@ -139,6 +129,6 @@ function love.mousereleased(x, y, button)
             ys = 0
         })
     end
- end
+end
 
 return controls
