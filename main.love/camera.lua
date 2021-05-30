@@ -10,7 +10,7 @@ end
 
 local function unpackCamera(t)
     local sx, sy, sw, sh
-    if t.getWindow then -- assume t is a gamera camera
+    if t.getWindow then
         sx, sy, sw, sh = t:getWindow()
     else
         sx, sy, sw, sh =
@@ -55,9 +55,9 @@ local function toScreen(camera, worldx, worldy)
     camera = checkType(camera or EMPTY, "table", "camera")
     local camx, camy, zoom, angle, sx, sy, sw, sh = unpackCamera(camera)
     local sin, cos = math.sin(angle), math.cos(angle)
-    local x, y = worldx - camx, worldy - camy
+    local x, y = worldx, worldy
     x, y = cos * x + sin * y, -sin * x + cos * y
-    return zoom * x + sw/2 + sx, zoom * y + sh/2 + sy
+    return zoom * x + sx, zoom * y + sy
 end
 
 local function push(camera)
@@ -73,6 +73,8 @@ end
 local function drawUI(camera, objects)
     local i = 0
     local dist = 15
+    love.graphics.print("Zoom: "..settings.zoom, 0, i)
+    i = i + dist
     love.graphics.print("Cursor.sx:"..cursor.sx, 0, i)
     i = i + dist
     love.graphics.print("Cursor.sy:"..cursor.sy, 0, i)
@@ -81,14 +83,10 @@ local function drawUI(camera, objects)
     i = i + dist
     love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
     i = i + dist
-    love.graphics.print("Cursor.tempx:"..cursor.tempx, 0, i)
-    i = i + dist
-    love.graphics.print("Cursor.tempy:"..cursor.tempy, 0, i)
-    i = i + dist
     for key, value in pairs(objects) do
         love.graphics.print(key, 0, i)
         i = i + dist
-            for key, value2 in pairs(value) do
+        for key, value2 in pairs(value) do
             if key == "x" then
                 love.graphics.print(key..": "..value2, 0, i)
                 i = i + dist
