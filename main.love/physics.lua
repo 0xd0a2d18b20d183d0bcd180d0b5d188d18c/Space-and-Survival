@@ -25,4 +25,18 @@ function applyAngularVelocity(object, dt)
     object.angle = object.angle + object.va * dt
 end
 
+function destroyObjects(object1, key1, object2, key2)
+    if object1.type == "sat" and object2.type == "sat" then
+        objects[key1] = nil
+        objects[key2] = nil
+    end
+    if object1.type == "sat" and object2.type == "planet" then
+        objects[key1] = nil
+    end
+    if object1.type == "planet" and object2.type == "planet" then
+        objects[key1] = nil
+        objects[key2] = nil
+    end
+end
+
 return physics
