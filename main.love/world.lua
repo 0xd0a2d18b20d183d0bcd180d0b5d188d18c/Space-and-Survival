@@ -43,7 +43,9 @@ function initWorld()
             ys = 0
         }
     }
+    -- gameState mainMenu, game, paused,
     local state = {
+        gameState = "mainMenu",
         stop = 0
     }
     return map, settings, objects, cursor, state

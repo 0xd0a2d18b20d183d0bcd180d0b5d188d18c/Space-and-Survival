@@ -66,16 +66,16 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
     if key == "space" then
-        if state.stop == 0 then
-            state.stop = 1
-        elseif state.stop == 1 then
-            state.stop = 0
+        if state.gameState == "game" then
+            state.gameState = "paused"
+        elseif state.gameState == "paused" then
+            state.gameState = "game"
         end
     end
     if key == "escape" then
        love.event.quit()
     end
- end
+end
 
 function love.wheelmoved(x, y)
     if y > 0 then
@@ -87,47 +87,54 @@ end
 
 function love.mousepressed(x, y, button, istouch)
     tempx0, tempy0 = camera.toWorld(settings, x, y)
+    if state.gameState == "mainMenu" and x >= 110 and x <= 220 then
+        if y >= settings.sh - 350 and y <= settings.sh - 350 + 25 then
+            state.gameState = "game"
+        end
+    end
 end
 
 function love.mousereleased(x, y, button)
-    tempx1, tempy1 = camera.toWorld(settings, x, y)
-    if button == 1 then
-        table.insert(objects, {
-            x = tempx0 / settings.zoom,
-            y = tempy0 / settings.zoom,
-            radius = 12,
-            mass = 10,
-            type = "sat",
-            angle = 0,
-            controlled = 1,
-            vx = tempx1 - tempx0,
-            vy = tempy1 - tempy0,
-            va = 0,
-            acceleration = 100,
-            rotation = math.pi,
-            image = love.graphics.newImage("assets/sat.png"),
-            xs = 0,
-            ys = 0
-        })
-    end
-    if button == 2 then
-        table.insert(objects, {
-            x = tempx0 / settings.zoom,
-            y = tempy0 / settings.zoom,
-            radius = 210,
-            mass = 7 * 10 ^ 11,
-            type = "planet",
-            angle = 0,
-            controlled = 0,
-            vx = tempx1 - tempx0,
-            vy = tempy1 - tempy0,
-            va = 0.02,
-            acceleration = 0,
-            rotation = math.pi,
-            image = love.graphics.newImage("assets/moon.png"),
-            xs = 0,
-            ys = 0
-        })
+    if state.gameState == "game" and love.keyboard.isDown('lctrl') then
+        tempx1, tempy1 = camera.toWorld(settings, x, y)
+        if button == 1 then
+            table.insert(objects, {
+                x = tempx0 / settings.zoom,
+                y = tempy0 / settings.zoom,
+                radius = 12,
+                mass = 10,
+                type = "sat",
+                angle = 0,
+                controlled = 1,
+                vx = tempx1 - tempx0,
+                vy = tempy1 - tempy0,
+                va = 0,
+                acceleration = 100,
+                rotation = math.pi,
+                image = love.graphics.newImage("assets/sat.png"),
+                xs = 0,
+                ys = 0
+            })
+        end
+        if button == 2 then
+            table.insert(objects, {
+                x = tempx0 / settings.zoom,
+                y = tempy0 / settings.zoom,
+                radius = 210,
+                mass = 7 * 10 ^ 11,
+                type = "planet",
+                angle = 0,
+                controlled = 0,
+                vx = tempx1 - tempx0,
+                vy = tempy1 - tempy0,
+                va = 0.02,
+                acceleration = 0,
+                rotation = math.pi,
+                image = love.graphics.newImage("assets/moon.png"),
+                xs = 0,
+                ys = 0
+            })
+        end
     end
 end
 
