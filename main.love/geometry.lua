@@ -16,9 +16,8 @@ function updatePosition(object, dt)
 end
 
 function updateCursorPosition()
-    cursor.sx, cursor.sy = love.mouse.getPosition( )
+    cursor.sx, cursor.sy = love.mouse.getPosition()
     cursor.x, cursor.y = camera.toWorld(settings, cursor.sx, cursor.sy)
-    --cursor.x, cursor.y = camera.toWorld(settings, cursor.tempx, cursor.tempy)
 end
 
 return geometry
