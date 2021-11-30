@@ -24,29 +24,46 @@ function initWorld()
         sw = love.graphics.getWidth(),
         sh = love.graphics.getHeight()
     }
-    local objects = {
-        moon = {
-            x = love.graphics.getWidth() / 2,
-            y = love.graphics.getHeight() / 2,
-            radius = 210,
-            mass = 7 * 10 ^ 11,
-            type = "planet",
-            angle = 0,
-            controlled = 0,
-            vx = 0,
-            vy = 0,
-            va = 0.02,
-            acceleration = 0,
-            rotation = math.pi,
-            image = love.graphics.newImage("assets/moon.png"),
-            xs = 0,
-            ys = 0
-        }
-    }
-    -- gameState mainMenu, game, paused,
+    local objects = {}
+    table.insert(objects, {
+        x = love.graphics.getWidth() / 2,
+        y = love.graphics.getHeight() / 2,
+        radius = 210,
+        mass = 7 * 10 ^ 11,
+        type = "moon",
+        angle = 0,
+        controlled = 0,
+        vx = 0,
+        vy = 0,
+        va = 0.02,
+        acceleration = 0,
+        rotation = math.pi,
+        image = love.graphics.newImage("assets/moon.png"),
+        xs = 0,
+        ys = 0,
+        focus = 0
+    })
+    table.insert(objects, {
+        x = 400,
+        y = 540,
+        radius = 12,
+        mass = 10,
+        type = "sat",
+        angle = 0,
+        controlled = 1,
+        vx = 0,
+        vy = -250,
+        va = 0,
+        acceleration = 100,
+        rotation = math.pi,
+        image = love.graphics.newImage("assets/sat.png"),
+        xs = 0,
+        ys = 0,
+        focus = 0
+    })
     local state = {
-        gameState = "mainMenu",
-        stop = 0
+        -- game mainMenu, game, pause,
+        game = "game",
     }
     return map, settings, objects, cursor, state
 end

@@ -30,10 +30,10 @@ function destroyObjects(object1, key1, object2, key2)
         objects[key1] = nil
         objects[key2] = nil
     end
-    if object1.type == "sat" and object2.type == "planet" then
+    if object1.type == "sat" and object2.type == "moon" then
         objects[key1] = nil
     end
-    if object1.type == "planet" and object2.type == "planet" then
+    if object1.type == "moon" and object2.type == "moon" then
         objects[key1] = nil
         objects[key2] = nil
     end
