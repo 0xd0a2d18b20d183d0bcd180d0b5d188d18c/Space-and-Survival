@@ -10,7 +10,7 @@ end
 
 local function unpackCamera(t)
     local sx, sy, sw, sh
-    if t.getWindow then -- assume t is a gamera camera
+    if t.getWindow then
         sx, sy, sw, sh = t:getWindow()
     else
         sx, sy, sw, sh =
@@ -55,7 +55,7 @@ local function toScreen(camera, worldx, worldy)
     camera = checkType(camera or EMPTY, "table", "camera")
     local camx, camy, zoom, angle, sx, sy, sw, sh = unpackCamera(camera)
     local sin, cos = math.sin(angle), math.cos(angle)
-    local x, y = worldx - camx, worldy - camy
+    local x, y = worldx, worldy
     x, y = cos * x + sin * y, -sin * x + cos * y
     return zoom * x + sx, zoom * y + sy
 end
@@ -70,11 +70,49 @@ local function push(camera)
     lg.translate(-camx, -camy)
 end
 
+local function drawUI(camera, objects)
+    local i = 0
+    local dist = 15
+    love.graphics.print("Zoom: "..settings.zoom, 0, i)
+    i = i + dist
+    love.graphics.print("Cursor.sx:"..cursor.sx, 0, i)
+    i = i + dist
+    love.graphics.print("Cursor.sy:"..cursor.sy, 0, i)
+    i = i + dist
+    love.graphics.print("Cursor.wx:"..cursor.x, 0, i)
+    i = i + dist
+    love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
+    i = i + dist
+    love.graphics.print("All objects: "..table.getn(objects), 0, i)
+    i = i + dist
+    for key, value in pairs(objects) do
+        if value.focus == 1 then
+            love.graphics.print("Object ID: "..key, 0, i)
+            i = i + dist
+            for key, value in pairs(value) do
+                if key ~= "image" then
+                    love.graphics.print(key..": "..value, 0, i)
+                    i = i + dist
+                end
+            end
+        end
+    end
+end
+
+local function drawObjects(camera, objects)
+    for key, value in pairs(objects) do
+        love.graphics.draw(value.image, value.xs, value.ys, value.angle, settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)
+        love.graphics.line(value.xs, value.ys, value.xs + value.vx, value.ys + value.vy)
+    end
+end
+
 local cameraIndex = {
     toWorld = function (self, x, y) return toWorld(self.camera, x, y) end,
     toScreen = function (self, x, y) return toScreen(self.camera, x, y) end,
     visible = function (self) return visible(self.camera) end,
-    push = function (self) return push(self.camera) end
+    push = function (self) return push(self.camera) end,
+    drawUI = function (self, objects) return drawUI(self.camera, objects) end,
+    drawObjects = function (self, objects) return drawObjects(self.camera, objects) end
 }
 
 local cameraMt = {
@@ -93,5 +131,7 @@ return {
     toScreen = toScreen,
     visible = visible,
     init = init,
-    push = push
+    push = push,
+    drawUI = drawUI,
+    drawObjects = drawObjects
 }

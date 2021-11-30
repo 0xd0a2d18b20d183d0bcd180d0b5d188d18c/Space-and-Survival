@@ -1,3 +1,5 @@
+local camera = require "camera"
+
 local geometry = {}
 
 function calcDistance(object1, object2)
@@ -11,6 +13,11 @@ end
 function updatePosition(object, dt)
     object.x = object.x + object.vx * dt
     object.y = object.y + object.vy * dt
+end
+
+function updateCursorPosition()
+    cursor.sx, cursor.sy = love.mouse.getPosition()
+    cursor.x, cursor.y = camera.toWorld(settings, cursor.sx, cursor.sy)
 end
 
 return geometry

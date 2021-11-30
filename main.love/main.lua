@@ -1,110 +1,87 @@
 local camera = require "camera"
-local physics = require "physics"
-local geometry = require "geometry"
 local controls = require "controls"
-local debug = require "debug"
+local geometry = require "geometry"
+local physics = require "physics"
 local world = require "world"
-local json = require "json"
+SPEED = 0
 
 function love.load()
-    map, settings, objects, cursor = initWorld()
-    stop = 0
+    map, settings, objects, cursor, state = initWorld()
 end
 
 function love.update(dt)
-    if stop == 0 then
-        for key1, value1 in pairs(objects) do
-            for key2, value2 in pairs(objects) do
-                if value1 ~= value2 then
-                    local distance = calcDistance(value1, value2)
-                    local angle1 = calcAngle(value2, value1)
-                    local angle2 = calcAngle(value1, value2)
-                    local f = calcGravityForce(value1, value2, distance)
-                    local acc1 = calcAcceleration(f, value1.mass)
-                    local acc2 = calcAcceleration(f, value2.mass)
-                    applyAcceleration(value1, angle1, acc1, dt)
-                    applyAcceleration(value2, angle2, acc2, dt)
-                    if checkCollision(value1, value2, distance) then
-                        objects[key2] = nil
+    if state.game == "game" then
+        for i = 0, SPEED, 1 do
+            for key1, value1 in pairs(objects) do
+                for key2, value2 in pairs(objects) do
+                    if value1 ~= value2 then
+                        local distance = calcDistance(value1, value2)
+                        applyAcceleration(value1, calcAngle(value2, value1), calcAcceleration(calcGravityForce(value1, value2, distance), value1.mass), dt)
+                        if checkCollision(value1, value2, distance) then
+                            destroyObjects(value1, key1, value2, key2)
+                        end
                     end
                 end
+                applyAngularVelocity(value1, dt)
+                updatePosition(value1, dt)
+                value1.xs, value1.ys = camera.toScreen(settings, value1.x, value1.y)
             end
-            applyAngularVelocity(value1, dt)
-            updatePosition(value1, dt)
-            value1.xs, value1.ys = camera.toScreen(settings, value1.x, value1.y)
+            for key, value in pairs(objects) do
+                if value.focus == 1 then
+                    controls(value, dt)
+                    settings.x = value.x * settings.zoom
+                    settings.y = value.y * settings.zoom
+                end
+            end
         end
+    end
+    if state.game == "game" or state.game == "pause" then
         for key, value in pairs(objects) do
-            if value.controlled == 1 then
-                controls(value, dt)
+            if value.focus == 1 then
+                settings.x = value.x * settings.zoom
+                settings.y = value.y * settings.zoom
             end
         end
+        cameraControls()
     end
-    cursor.sx, cursor.sy = love.mouse.getPosition( )
-    cursor.x, cursor.y = camera.toWorld(settings, cursor.sx / settings.zoom, cursor.sy / settings.zoom)
-    cameraControls()
-end
-
-function love.mousepressed(x, y, button, istouch)
-    tempx, tempy = camera.toWorld(settings, x, y)
-    if button == 1 then
-        table.insert(objects, {
-            x = tempx,
-            y = tempy,
-            radius = 60,
-            mass = 10,
-            angle = 0,
-            controlled = 1,
-            vx = math.random(-400, 400),
-            vy = math.random(-400, 400),
-            va = 0,
-            acceleration = 100,
-            rotation = math.pi,
-            image = love.graphics.newImage("assets/sat.png"),
-            xs = 0,
-            ys = 0
-        })
-    end
-end
-
-local charset = {}  do -- [0-9a-zA-Z]
-    for c = 48, 57  do table.insert(charset, string.char(c)) end
-    for c = 65, 90  do table.insert(charset, string.char(c)) end
-    for c = 97, 122 do table.insert(charset, string.char(c)) end
-end
-
-function randomString(length)
-    if not length or length <= 0 then return '' end
-    math.randomseed(os.clock()^5)
-    return randomString(length - 1) .. charset[math.random(1, #charset)]
+    updateCursorPosition()
 end
 
 function love.draw(dt)
     local camera = camera.init(settings)
-    local i = 0
-    local dist = 15
-    love.graphics.print("Cursor.sx:"..cursor.sx, 0, i)
-    i = i + dist
-    love.graphics.print("Cursor.sy:"..cursor.sy, 0, i)
-    i = i + dist
-    love.graphics.print("Cursor.wx:"..cursor.x, 0, i)
-    i = i + dist
-    love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
-    --[[
-    for key, value in pairs(objects) do
-        love.graphics.print(key, 0, i)
-        i = i + dist
-            for key, value2 in pairs(value) do
-            if key ~= "image" then
-                love.graphics.print(key..": "..value2, 0, i)
-                i = i + dist
-            end
-        end
-    end
-    --]]
-        camera:push()
-    for key, value in pairs(objects) do
-        love.graphics.draw(value.image, value.xs, value.ys, value.angle, settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)
-        love.graphics.line(value.xs, value.ys, (value.xs + value.vx) * settings.zoom, (value.ys + value.vy) * settings.zoom)
-    end
+    camera:push()
     love.graphics.pop()
+    if state.game == "game" or state.game == "pause" then
+        camera:push()
+        camera.drawObjects(settings, objects)
+        love.graphics.pop()
+        camera.drawUI(settings, objects)
+    end
+    if state.game == "mainMenu" then
+        local x = 110
+        local y = settings.sh - 350
+        local distR = 30
+        local distT = 5
+        love.graphics.rectangle("line", x, y, 100, 25)
+        love.graphics.print("Continue", x + 10, y + distT)
+        y = y + distR
+        love.graphics.rectangle("line", x, y, 100, 25)
+        love.graphics.print("New Game", x + 10, y + distT)
+        y = y + distR
+        love.graphics.rectangle("line", x, y, 100, 25)
+        love.graphics.print("Save", x + 10, y + distT)
+        y = y + distR
+        love.graphics.rectangle("line", x, y, 100, 25)
+        love.graphics.print("Load", x + 10, y + distT)
+        y = y + distR
+        love.graphics.rectangle("line", x, y, 100, 25)
+        love.graphics.print("Settings", x + 10, y + distT)
+        y = y + distR
+        love.graphics.rectangle("line", x, y, 100, 25)
+        love.graphics.print("Quit", x + 10, y + distT)
+        y = y + distR
+    end
+    if state.game == "pause" then
+        love.graphics.print("PAUSE", love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    end
 end
