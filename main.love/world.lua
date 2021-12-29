@@ -33,6 +33,7 @@ function initWorld()
         type = "moon",
         angle = 0,
         controlled = 0,
+        underControl = 0,
         vx = 0,
         vy = 0,
         va = 0.02,
@@ -41,6 +42,13 @@ function initWorld()
         image = love.graphics.newImage("assets/moon.png"),
         xs = 0,
         ys = 0,
+        isTracksVisible = 0,
+        tracks = {
+            {
+                x = love.graphics.getWidth() / 2,
+                y = love.graphics.getHeight() / 2,
+            }
+        },
         focus = 0
     })
     table.insert(objects, {
@@ -50,7 +58,8 @@ function initWorld()
         mass = 10,
         type = "sat",
         angle = 0,
-        controlled = 1,
+        controlled = 0,
+        underControl = 1,
         vx = 0,
         vy = -250,
         va = 0,
@@ -59,11 +68,23 @@ function initWorld()
         image = love.graphics.newImage("assets/sat.png"),
         xs = 0,
         ys = 0,
+        isTracksVisible = 0,
+        tracks = {
+            {
+                x = 400,
+                y = 540,
+            }
+        },
         focus = 0
     })
     local state = {
         -- game mainMenu, game, pause,
         game = "game",
+        speed = 0,
+        every = {
+            fps20 = 0
+        },
+        objectsAmount = 0
     }
     return map, settings, objects, cursor, state
 end

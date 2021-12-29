@@ -5,13 +5,7 @@ local tempx0, tempy0
 local controls = {}
 
 function cameraControls()
-    local focus = 0
-    for _, value in pairs(objects) do
-        if value.focus == 1 then
-            focus = 1
-        end
-    end
-    if focus == 0 then
+    if FOCUS == nil then
         if love.keyboard.isDown('w') then
             settings.y = settings.y - (10 / settings.zoom)
         end
@@ -73,41 +67,45 @@ function love.keypressed(key, scancode, isrepeat)
         end
     end
     if key == "tab" then
-        if objects == nill then
+        if objects == nil then
             return
         end
         local error = 0
-        for key, value in pairs(objects) do
-            if value.focus == 1 then
-                local _, value = next(objects, key)
-                objects[key].focus = 0
-                objects[key].controlled = 0
-                if value ~= nill then
-                    value.focus = 1
+        if FOCUS ~= nil and objects[FOCUS.id] ~= nil then
+            local _, value = next(objects, FOCUS.id)
+            objects[FOCUS.id].focus = 0
+            objects[FOCUS.id].controlled = 0
+            if value ~= nil then
+                value.focus = 1
+                if value.underControl == 1 then
                     value.controlled = 1
-                    return
-                else
-                    for key, _ in pairs(objects) do
-                        objects[key].focus = 1
-                        objects[key].controlled = 1
-                        return
-                    end
                 end
-                error = 1
+                return
+            else
+                for key, _ in pairs(objects) do
+                    objects[key].focus = 1
+                    if objects[key].underControl == 1 then
+                        objects[key].controlled = 1
+                    end
+                    return
+                end
             end
+            error = 1
         end
         if error ~= 1 then
-            for key, value in pairs(objects) do
+            for key, _ in pairs(objects) do
                 objects[key].focus = 1
+                if objects[key].underControl == 1 then
+                    objects[key].controlled = 1
+                end
                 return
             end
         end
     end
     if key == "delete" then
-        for key, value in pairs(objects) do
-            if value.focus == 1 then
-                objects[key] = nill
-            end
+        if FOCUS ~= nil then
+            objects[FOCUS.id] = nil
+            FOCUS = nil
         end
     end
     if key == "escape" then
@@ -122,36 +120,56 @@ function love.keypressed(key, scancode, isrepeat)
     if key == "v" then
         for _, value in pairs(objects) do
             if value.focus == 1 then
-                value.focus = 0
+                FOCUS.focus = 0
+                FOCUS = nil
             end
         end
     end
+    if key == "y" then
+        if FOCUS ~= nil then
+            if FOCUS.isTracksVisible == 1 then
+                FOCUS.isTracksVisible = 0
+            else
+                FOCUS.isTracksVisible = 1
+            end
+        end
+    end
+    if key == "r" then
+        for key, value in pairs(objects) do
+            value.vx = value.vx * -1
+            value.vy = value.vy * -1
+            value.va = value.va * -1
+        end
+    end
     if key == "1" then
-        SPEED = 0
+        state.speed = 0
     end
     if key == "2" then
-        SPEED = 1
+        state.speed = 1
     end
     if key == "3" then
-        SPEED = 2
+        state.speed = 2
     end
     if key == "4" then
-        SPEED = 3
+        state.speed = 3
     end
     if key == "5" then
-        SPEED = 4
+        state.speed = 4
     end
     if key == "6" then
-        SPEED = 5
+        state.speed = 5
     end
     if key == "7" then
-        SPEED = 6
+        state.speed = 6
     end
     if key == "8" then
-        SPEED = 7
+        state.speed = 7
     end
     if key == "9" then
-        SPEED = 8
+        state.speed = 8
+    end
+    if key == "0" then
+        state.speed = 9
     end
 end
 
@@ -178,7 +196,7 @@ function love.mousepressed(x, y, button, istouch)
     -- New Game
     if state.game == "mainMenu" and x >= 110 and x <= 220 then
         if y >= tempy and y <= tempy + distR then
-            objects = nill
+            objects = nil
             objects = {}
             state.game = "game"
         end
@@ -236,6 +254,7 @@ function love.mousereleased(x, y, button)
                 mass = 10,
                 type = "sat",
                 angle = 0,
+                underControl = 1,
                 controlled = 1,
                 vx = tempx1 - tempx0,
                 vy = tempy1 - tempy0,
@@ -245,6 +264,13 @@ function love.mousereleased(x, y, button)
                 image = love.graphics.newImage("assets/sat.png"),
                 xs = 0,
                 ys = 0,
+                isTracksVisible = 0,
+                tracks = {
+                    {
+                        x = tempx0 / settings.zoom,
+                        y = tempy0 / settings.zoom
+                    }
+                },
                 focus = 0
             })
         end
@@ -254,8 +280,10 @@ function love.mousereleased(x, y, button)
                 y = tempy0 / settings.zoom,
                 radius = 210,
                 mass = 7 * 10 ^ 11,
+                -- mass = 1,
                 type = "moon",
                 angle = 0,
+                underControl = 0,
                 controlled = 0,
                 vx = tempx1 - tempx0,
                 vy = tempy1 - tempy0,
@@ -265,6 +293,13 @@ function love.mousereleased(x, y, button)
                 image = love.graphics.newImage("assets/moon.png"),
                 xs = 0,
                 ys = 0,
+                isTracksVisible = 0,
+                tracks = {
+                    {
+                        x = tempx0 / settings.zoom,
+                        y = tempy0 / settings.zoom
+                    }
+                },
                 focus = 0
             })
         end

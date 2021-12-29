@@ -83,24 +83,24 @@ local function drawUI(camera, objects)
     i = i + dist
     love.graphics.print("Cursor.wy:"..cursor.y, 0, i)
     i = i + dist
-    love.graphics.print("All objects: "..table.getn(objects), 0, i)
+    love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 0, i)
     i = i + dist
-    for key, value in pairs(objects) do
-        if value.focus == 1 then
-            love.graphics.print("Object ID: "..key, 0, i)
-            i = i + dist
-            for key, value in pairs(value) do
-                if key ~= "image" then
-                    love.graphics.print(key..": "..value, 0, i)
-                    i = i + dist
-                end
+    love.graphics.print("All objects: "..state.objectsAmount, 0, i)
+    i = i + dist
+    if FOCUS ~= nil then
+        love.graphics.print("Object ID: "..FOCUS.id, 0, i)
+        i = i + dist
+        for key, value in pairs(FOCUS) do
+            if key ~= "image" and key ~= "tracks" then
+                love.graphics.print(key..": "..value, 0, i)
+                i = i + dist
             end
         end
     end
 end
 
 local function drawObjects(camera, objects)
-    for key, value in pairs(objects) do
+    for _, value in pairs(objects) do
         love.graphics.draw(value.image, value.xs, value.ys, value.angle, settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)
         love.graphics.line(value.xs, value.ys, value.xs + value.vx, value.ys + value.vy)
     end
