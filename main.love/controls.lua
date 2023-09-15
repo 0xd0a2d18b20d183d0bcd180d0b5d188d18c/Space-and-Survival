@@ -9,11 +9,11 @@ function cameraControls()
         if love.keyboard.isDown('w') then
             settings.y = settings.y - (10 / settings.zoom)
         end
-        if love.keyboard.isDown('s') then
-            settings.y = settings.y + (10 / settings.zoom)
-        end
         if love.keyboard.isDown('a') then
             settings.x = settings.x - (10 / settings.zoom)
+        end
+        if love.keyboard.isDown('s') then
+            settings.y = settings.y + (10 / settings.zoom)
         end
         if love.keyboard.isDown('d') then
             settings.x = settings.x + (10 / settings.zoom)
@@ -271,6 +271,7 @@ function love.mousereleased(x, y, button)
                         y = tempy0 / settings.zoom
                     }
                 },
+                color = {0, 0, 1},
                 focus = 0
             })
         end
@@ -300,6 +301,7 @@ function love.mousereleased(x, y, button)
                         y = tempy0 / settings.zoom
                     }
                 },
+                color = {0, 1, 0},
                 focus = 0
             })
         end

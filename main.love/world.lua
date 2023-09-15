@@ -49,6 +49,7 @@ function initWorld()
                 y = love.graphics.getHeight() / 2,
             }
         },
+        color = {1, 0, 0},
         focus = 0
     })
     table.insert(objects, {
@@ -75,6 +76,7 @@ function initWorld()
                 y = 540,
             }
         },
+        color = {0, 1, 0},
         focus = 0
     })
     local state = {

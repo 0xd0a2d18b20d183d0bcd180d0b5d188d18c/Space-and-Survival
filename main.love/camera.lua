@@ -92,7 +92,7 @@ local function drawUI(camera, objects)
         i = i + dist
         for key, value in pairs(FOCUS) do
             if key ~= "image" and key ~= "tracks" then
-                love.graphics.print(key..": "..value, 0, i)
+                --love.graphics.print(key..": "..value, 0, i)
                 i = i + dist
             end
         end
@@ -101,7 +101,10 @@ end
 
 local function drawObjects(camera, objects)
     for _, value in pairs(objects) do
-        love.graphics.draw(value.image, value.xs, value.ys, value.angle, settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)
+        love.graphics.setColor(value.color)
+        love.graphics.circle("fill", value.xs, value.ys, value.radius * settings.zoom)
+        love.graphics.setColor(1, 1, 1)
+        --love.graphics.draw(value.image, value.xs, value.ys, value.angle, settings.zoom, settings.zoom, value.image:getWidth() / 2, value.image:getHeight() / 2)
         love.graphics.line(value.xs, value.ys, value.xs + value.vx, value.ys + value.vy)
     end
 end
